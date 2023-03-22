@@ -1,0 +1,72 @@
+#+TITLE: Glogi DCE Demonstration
+#+AUTHOR: rome-user
+#+LANGAUGE: en
+
+This repository produces a minimal working example of DCE failing with Glogi
+unless some modifications are made to a private ~log-expr~ function.
+
+* Getting started
+
+If you are using Emacs, you can =M-x cider-jack-in-cljs= then choose the =:demo=
+build target. Once a REPL is opened, visit the following URLs in your web
+browser.
+
+- http://localhost:9630
+- http://localhost:8080
+
+The first link is Shadow CLJS console. The second link is a webpage with very
+minimal layout and code.
+
+Use the Shadow CLJS console to quickly switch between development and release
+builds and compare output. Unfortunately, Shadow CLJS must be restarted to try
+out the example code below with the modified Glogi library.
+
+* Example code
+
+#+begin_src clojure
+(defn ^:export init []
+  (let [message (js/document.createElement "p")]
+    (set! (.-innerText message)
+          (if ^boolean goog.DEBUG
+            "You are in a development build. Logging is expected."
+            (str "You are in a release build.\n"
+                 "Check the compiled JS file for traces of log strings.")))
+    (js/document.body.appendChild message))
+  (log/trace :message "You should not see me in your release build!"))
+#+end_src
+
+** Release build output
+
+*** Without modifications
+
+#+begin_src javascript
+  function eg() {
+    var a = document.createElement("p");
+    a.innerText = "You are in a release build.\nCheck the compiled JS file for traces of log strings.";
+    document.body.appendChild(a);
+    a = new kb(null,2,[Ke, "You should not see me in your release build!", Je, 13],null);
+    if (w(!1))
+      if (Af("demo.core"),
+	  w(null)) {
+	var b = Bb.h(dg, pf);
+	a = new ("undefined" !== typeof aa && "undefined" !== typeof fa && "undefined" !== typeof fa.zb ? fa.zb : vf)(b,a,"demo.core");
+	a = "undefined" !== typeof aa && "undefined" !== typeof qf && "undefined" !== typeof wf ? void 0 : null.kc(a)
+      } else
+	a = null;
+    else
+      a = null;
+    return a
+  }
+#+end_src
+
+*** With modifications
+
+#+begin_src javascript
+  function eg() {
+    var a = document.createElement("p");
+    a.innerText = "You are in a release build.\nCheck the compiled JS file for traces of log strings.";
+    document.body.appendChild(a);
+    return null
+  }
+#+end_src
+

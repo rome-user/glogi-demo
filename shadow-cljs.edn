@@ -1,0 +1,21 @@
+;;; To see DCE in action, swap the commented data
+
+{:source-paths
+ ["src"]
+ #_["modified-glogi" "src"]
+
+ :dependencies
+ [[com.lambdaisland/glogi "1.2.164"]]
+ #_[]
+
+ :dev-http {8080 "public"}
+
+ :builds
+ {:demo
+  {:target :browser
+   :output-dir "public/js"
+   :asset-path "/js"
+   :modules {:main {:entries [demo.core]
+                    :init-fn demo.core/init}}
+   :release
+   {:compiler-options {:closure-defines {goog.debug.LOGGING_ENABLED false}}}}}}
